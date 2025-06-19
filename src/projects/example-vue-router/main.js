@@ -1,19 +1,20 @@
-const IS_PROD = true;
+import {loadScript} from '../../common/common.js'
+const IS_PROD = false;
 
 const CONFIG = {
-    APP_JS_SRC: './src/App.js',
+    APP_JS_SRC: './App.js',
     RESPONSE_JSX_SERVICE_WORKER_SRC: './response-jsx-service-worker.js',
 }
 
-unregisterServiceWorker().then(() => registerServiceWorker())
+//unregisterServiceWorker().then(() => registerServiceWorker())
 
-//registerServiceWorker()
+registerServiceWorker()
 
 async function initApp() {
     console.log('initApp')
-    await loadScript(IS_PROD ? './src/assets/lib/vue/vue.global.prod.js' : './src/assets/lib/vue/vue.global.js');
-    await loadScript(IS_PROD ? './src/assets/lib/vue-router/vue-router.global.prod.js' : './src/assets/lib/vue-router/vue-router.global.js');
-    await loadScript(IS_PROD ? './src/assets/lib/naive-ui/index.prod.js' : './src/assets/lib/naive-ui/index.js');
+    await loadScript(IS_PROD ? '../../assets/lib/vue/vue.global.prod.js' : '../../assets/lib/vue/vue.global.js');
+    await loadScript(IS_PROD ? '../../assets/lib/vue-router/vue-router.global.prod.js' : '../../assets/lib/vue-router/vue-router.global.js');
+    await loadScript(IS_PROD ? '../../assets/lib/naive-ui/index.prod.js' : '../../assets/lib/naive-ui/index.js');
     await loadScript(CONFIG.APP_JS_SRC, 'module')
 }
 
@@ -85,15 +86,3 @@ async function unregisterServiceWorker() {
     }
 }
 
-function loadScript(url, type) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = url;
-        if (type) {
-            script.type = type;
-        }
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}

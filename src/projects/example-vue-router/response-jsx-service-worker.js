@@ -8,7 +8,7 @@ self.addEventListener('install', e => {
     // 获取 Babel 编译器
     async function getBabel() {
         try {
-            const r = await fetch('./src/assets/lib/babel-standalone/babel.js');
+            const r = await fetch('../../assets/lib/babel-standalone/babel.js');
             //const r = await fetch(CONFIG.BABEL_SRC);
             const babelCode = await r.text();
             eval(babelCode);
@@ -29,9 +29,9 @@ self.addEventListener('activate', e => {
 // 拦截路径匹配
 const interceptorPaths = [
     '/App.js',
-    '/src/router',
-    '/src/store',
-    '/src/views',
+    '/router/',
+    '/store/',
+    '/views/',
 ]
 // 拦截和处理请求
 self.addEventListener('fetch', e => {

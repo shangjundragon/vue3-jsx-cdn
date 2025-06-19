@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 JSX 内联方案</title>
+    <link rel="stylesheet" href="../../assets/styles/common.css">
+    <link rel="stylesheet" href="../../assets/styles/flex-common.css">
+
+</head>
+
+<body>
+<div id="app"></div>
+<script src="../../assets/lib/vue/vue.global.js"></script>
+<script type="text/babel">
+    /* @jsx Vue.h */
+    import {loadScript} from "../../common/common.js";
+
+    const IS_PROD = false;
+    async function init() {
+        await loadScript(IS_PROD ? '../../assets/lib/vue/vue.global.prod.js' : '../../assets/lib/vue/vue.global.js');
+        await loadScript(IS_PROD ? '../../assets/lib/babel-standalone/babel.prod.js' : '../../assets/lib/babel-standalone/babel.js');
+
+        const {defineComponent, createApp} = Vue
+
+        /*const app = createApp({
+            setup() {
+                return () => <div>
+                    hello
+                </div>
+            }
+        })*/
+        /*const app = createApp({
+            render: () => <div>hello</div>
+        })*/
+
+        /*const app = createApp({
+            template: `<div>hello</div>`
+        })*/
+        const app = createApp(defineComponent(() => {
+            return () => <div>
+                hello
+            </div>
+        }))
+        app.mount('#app')
+    }
+    init()
+
+</script>
+</body>
+
+</html>
