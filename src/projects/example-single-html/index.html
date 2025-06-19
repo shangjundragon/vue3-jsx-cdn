@@ -18,6 +18,7 @@
     import {loadScript} from "../../common/common.js";
 
     const IS_PROD = false;
+
     async function init() {
         await loadScript(IS_PROD ? '../../assets/lib/vue/vue.global.prod.js' : '../../assets/lib/vue/vue.global.js');
         await loadScript(IS_PROD ? '../../assets/lib/babel-standalone/babel.prod.js' : '../../assets/lib/babel-standalone/babel.js');
@@ -45,6 +46,7 @@
         }))
         app.mount('#app')
     }
+
     init()
 
 </script>
