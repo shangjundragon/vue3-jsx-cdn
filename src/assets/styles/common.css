@@ -1,0 +1,65 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.pd-05r {
+    padding: 0.5rem;
+}
+
+.bor-red {
+    border: 1px solid red;
+}
+
+.h-100v {
+    height: 100vh;
+}
+
+.w-100v {
+    width: 100vw;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.wh-100 {
+    width: 100%;
+    height: 100%;
+}
+
+
+.font-12r {
+    font-size: 1.2rem;
+}
+
+.font-14r {
+    font-size: 1.4rem;
+}
+
+.font-16r {
+    font-size: 1.6rem;
+}
+
+.font-18r {
+    font-size: 1.8rem;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+
+.mouse-active-show-container:hover .mouse-active-show-element {
+    display: inline;
+}
+
+.mouse-active-show-element {
+    display: none;
+}
