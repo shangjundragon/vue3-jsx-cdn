@@ -19,8 +19,8 @@ async function registerServiceWorker() {
         return
     }
 
-    // 获取 Service Worker 的绝对路径
-    const swPath = new URL('./service-worker.js', window.location.href).href;
+    // 获取 拦截jsx响应的Service Worker 的绝对路径
+    const swPath = new URL('./response-jsx-service-worker.js', window.location.href).href;
 
     navigator.serviceWorker.register(swPath, {scope: './'})
         .then(registration => {

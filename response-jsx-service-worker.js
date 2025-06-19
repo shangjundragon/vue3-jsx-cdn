@@ -23,10 +23,11 @@ self.addEventListener('activate', e => {
     e.waitUntil(self.clients.claim());
 });
 
-
+// 拦截路径匹配
 const interceptorPaths = [
     '/App.js',
     '/src/router',
+    '/src/store',
     '/src/views',
 ]
 // 拦截和处理请求
@@ -39,7 +40,6 @@ self.addEventListener('fetch', e => {
     }
     e.respondWith(handleRequest(e.request));
 });
-
 
 
 // 处理请求
