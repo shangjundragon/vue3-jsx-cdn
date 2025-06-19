@@ -1,5 +1,7 @@
 console.log('Service Worker 已加载');
 
+const version = 'v3'
+
 // 安装阶段：获取 Babel 编译器
 self.addEventListener('install', e => {
     console.log('Service Worker 安装开始');
@@ -7,6 +9,7 @@ self.addEventListener('install', e => {
     async function getBabel() {
         try {
             const r = await fetch('./src/assets/lib/babel-standalone/babel.js');
+            //const r = await fetch(CONFIG.BABEL_SRC);
             const babelCode = await r.text();
             eval(babelCode);
             console.log('Babel 已加载到 Service Worker');
@@ -65,8 +68,3 @@ async function handleRequest(request) {
     }
 }
 
-
-// 激活事件确保控制页面
-self.addEventListener('activate', e => {
-    e.waitUntil(self.clients.claim());
-});

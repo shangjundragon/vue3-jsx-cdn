@@ -1,3 +1,4 @@
+const { onMounted, defineComponent} = Vue;
 import AppStore from "../store/app-store.js";
 export default defineComponent(() => {
     onMounted(() => {

@@ -1,4 +1,6 @@
-import router from './src/router/router.js'
+const {RouterView} = VueRouter
+const {createApp} = Vue;
+import router from './router/router.js'
 
 function routerPush(name) {
     return router.push({name})

@@ -1,17 +1,21 @@
-const { createApp, ref, onMounted, defineComponent, resolveComponent, h, defineAsyncComponent } = Vue;
-const {createRouter, createWebHashHistory, RouterView} = VueRouter
+const IS_PROD = true;
 
-//unregisterServiceWorker().then(() => registerServiceWorker())
-registerServiceWorker()
-
-async function initApp() {
-    console.log('initApp');
-    const script = document.createElement('script');
-    script.src = './App.js';
-    script.type = 'module';
-    document.body.appendChild(script);
+const CONFIG = {
+    APP_JS_SRC: './src/App.js',
+    RESPONSE_JSX_SERVICE_WORKER_SRC: './response-jsx-service-worker.js',
 }
 
+unregisterServiceWorker().then(() => registerServiceWorker())
+
+//registerServiceWorker()
+
+async function initApp() {
+    console.log('initApp')
+    await loadScript(IS_PROD ? './src/assets/lib/vue/vue.global.prod.js' : './src/assets/lib/vue/vue.global.js');
+    await loadScript(IS_PROD ? './src/assets/lib/vue-router/vue-router.global.prod.js' : './src/assets/lib/vue-router/vue-router.global.js');
+    await loadScript(IS_PROD ? './src/assets/lib/naive-ui/index.prod.js' : './src/assets/lib/naive-ui/index.js');
+    await loadScript(CONFIG.APP_JS_SRC, 'module')
+}
 
 async function registerServiceWorker() {
     if (!'serviceWorker' in navigator) {
@@ -20,7 +24,7 @@ async function registerServiceWorker() {
     }
 
     // 获取 拦截jsx响应的Service Worker 的绝对路径
-    const swPath = new URL('./response-jsx-service-worker.js', window.location.href).href;
+    const swPath = new URL(CONFIG.RESPONSE_JSX_SERVICE_WORKER_SRC, window.location.href).href;
 
     navigator.serviceWorker.register(swPath, {scope: './'})
         .then(registration => {
@@ -79,4 +83,17 @@ async function unregisterServiceWorker() {
     } else {
         console.warn('浏览器不支持 Service Worker');
     }
+}
+
+function loadScript(url, type) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        if (type) {
+            script.type = type;
+        }
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
 }
