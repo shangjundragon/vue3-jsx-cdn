@@ -1,34 +1,28 @@
 const { createApp, ref, onMounted, defineComponent, resolveComponent, h, defineAsyncComponent } = Vue;
 const {createRouter, createWebHashHistory, RouterView} = VueRouter
 
+//unregisterServiceWorker().then(() => registerServiceWorker())
+registerServiceWorker()
 
 async function initApp() {
-    // 卸载service-worker
-    // await window.serviceWorkerRegistration.unregister()
-    console.log('initApp 被调用');
-
-    // 创建脚本加载器
+    console.log('initApp');
     const script = document.createElement('script');
     script.src = './App.js';
     script.type = 'module';
-
-    // 添加加载成功/失败监听
-    script.onload = () => console.log('app.js 加载成功');
-    script.onerror = (e) => {
-        console.error('App.js 加载失败', e);
-        document.getElementById('app').innerText = '脚本加载失败';
-    };
-
     document.body.appendChild(script);
 }
 
 
-// 注册 Service Worker
-if ('serviceWorker' in navigator) {
+async function registerServiceWorker() {
+    if (!'serviceWorker' in navigator) {
+        alert('浏览器版本过低!')
+        return
+    }
+
     // 获取 Service Worker 的绝对路径
     const swPath = new URL('./service-worker.js', window.location.href).href;
 
-    navigator.serviceWorker.register(swPath, { scope: './' })
+    navigator.serviceWorker.register(swPath, {scope: './'})
         .then(registration => {
             window.serviceWorkerRegistration = registration;
             console.log('Service Worker 注册成功:', registration);
@@ -52,8 +46,6 @@ if ('serviceWorker' in navigator) {
                     worker.addEventListener('statechange', stateChangeHandler);
                 } else {
                     console.warn('没有活动的 Service Worker');
-                    // 直接尝试初始化
-                    initApp();
                 }
             }
         })
@@ -61,6 +53,30 @@ if ('serviceWorker' in navigator) {
             console.error('注册 Service Worker 出错:', err);
             document.getElementById('app').innerText = '错误: ' + err.toString();
         });
-} else {
-    alert('浏览器版本过低!')
+
+}
+
+
+async function unregisterServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            // 获取当前作用域的注册
+            const registration = await navigator.serviceWorker.getRegistration('./');
+
+            if (registration) {
+                const result = await registration.unregister();
+                if (result) {
+                    console.log('Service Worker 注销成功');
+                } else {
+                    console.log('注销失败: Service Worker 可能已被移除');
+                }
+            } else {
+                console.log('未找到注册的 Service Worker');
+            }
+        } catch (error) {
+            console.error('注销过程中出错:', error);
+        }
+    } else {
+        console.warn('浏览器不支持 Service Worker');
+    }
 }
