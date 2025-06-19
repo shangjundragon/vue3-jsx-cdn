@@ -13,43 +13,24 @@
 <body>
 <div id="app"></div>
 <script src="../../assets/lib/vue/vue.global.js"></script>
-<script type="text/babel">
+<script src="../../assets/lib/naive-ui/index.js"></script>
+<script src="../../assets/lib/babel-standalone/babel.js"></script>
+
+<script type="text/babel" data-type="module">
     /* @jsx Vue.h */
-    import {loadScript} from "../../common/common.js";
 
-    const IS_PROD = false;
-
-    async function init() {
-        await loadScript(IS_PROD ? '../../assets/lib/vue/vue.global.prod.js' : '../../assets/lib/vue/vue.global.js');
-        await loadScript(IS_PROD ? '../../assets/lib/babel-standalone/babel.prod.js' : '../../assets/lib/babel-standalone/babel.js');
-
-        const {defineComponent, createApp} = Vue
-
-        /*const app = createApp({
-            setup() {
-                return () => <div>
-                    hello
-                </div>
-            }
-        })*/
-        /*const app = createApp({
-            render: () => <div>hello</div>
-        })*/
-
-        /*const app = createApp({
-            template: `<div>hello</div>`
-        })*/
-        const app = createApp(defineComponent(() => {
-            return () => <div>
-                hello
-            </div>
-        }))
-        app.mount('#app')
-    }
-
-    init()
+    const {createApp, defineComponent, ref} = Vue
+    const app = createApp(defineComponent(() => {
+        const count = ref(0)
+        return () => <div>
+            <naive.NButton type="primary" onClick={() => count.value++}>{count.value}</naive.NButton>
+        </div>
+    }))
+    app.mount('#app')
 
 </script>
+
+
 </body>
 
 </html>
