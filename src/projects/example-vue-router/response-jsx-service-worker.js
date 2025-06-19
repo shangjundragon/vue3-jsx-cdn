@@ -9,7 +9,6 @@ self.addEventListener('install', e => {
     async function getBabel() {
         try {
             const r = await fetch('../../assets/lib/babel-standalone/babel.js');
-            //const r = await fetch(CONFIG.BABEL_SRC);
             const babelCode = await r.text();
             eval(babelCode);
             console.log('Babel 已加载到 Service Worker');

@@ -18,10 +18,11 @@
 
 <script type="text/babel" data-type="module">
     /* @jsx Vue.h */
-
+    import {sayHello} from './say-hello.js'
     const {createApp, defineComponent, ref} = Vue
     const app = createApp(defineComponent(() => {
         const count = ref(0)
+        sayHello('张三')
         return () => <div>
             <naive.NButton type="primary" onClick={() => count.value++}>{count.value}</naive.NButton>
         </div>
