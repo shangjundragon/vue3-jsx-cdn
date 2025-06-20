@@ -1,4 +1,4 @@
-const VERSION = '27'
+const VERSION = '28'
 //const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.js';
 const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js';
 const JSX_PRAGMA = '/* @jsx Vue.h */';
@@ -63,7 +63,7 @@ async function handleJSRequest(request) {
 async function transformJSX(code) {
     try {
         // 添加JSX pragma注释
-        const jsxCode = JSX_PRAGMA + code;
+        const jsxCode =  code;
 
         // 确保Babel已加载
         if (typeof Babel === 'undefined') {
