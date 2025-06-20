@@ -1,6 +1,9 @@
 # Vue3 + JSX + CDN 方案
 
+- 通过service-worker拦截jsx转换为Vue.h 支持es6模块化
+
 ## unpkg版本锁定
+
 - vue3
     - 开发环境：https://unpkg.com/vue@3.5.17/dist/vue.global.js
     - 生产环境：https://unpkg.com/vue@3.5.17/dist/vue.global.prod.js

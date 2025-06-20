@@ -1,5 +1,5 @@
 const {RouterView} = VueRouter
-const {createApp} = Vue;
+const {createApp, defineComponent} = Vue;
 import router from './src/router/router.js'
 
 function routerPush(name) {
@@ -7,7 +7,7 @@ function routerPush(name) {
 }
 
 const app = createApp({
-    setup: () => {
+    setup() {
         return () => <div className="pd-05r fx-column fx-gp10">
             <div className="fx fx-gp10">
                 <naive.NButton onClick={() => routerPush('home')} type={'primary'}>home页面</naive.NButton>
