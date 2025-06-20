@@ -1,6 +1,6 @@
-const VERSION = '19'
-const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.js';
-//const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js';
+const VERSION = '27'
+//const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.js';
+const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js';
 const JSX_PRAGMA = '/* @jsx Vue.h */';
 
 self.addEventListener('install', event => {

@@ -11,8 +11,8 @@
 <div id="app"></div>
 <script type="module">
     // 注册Service Worker的优化实现
-    import {loadScript, loadNaiveUiScript, loadVueScript, loadVueRouterScript, loadLink} from "./src/common/common.js";
-    import {registerServiceWorker} from "./src/common/register-serviceWorker.js";
+    import {loadScript, loadNaiveUiScript, loadVueScript, loadVueRouterScript, loadLink} from "./src/common/common.js?no-jsx=1";
+    import {registerServiceWorker} from "./src/common/register-serviceWorker.js?no-jsx=1";
 
     const IS_PROD = false
     async function initApp() {
