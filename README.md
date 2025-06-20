@@ -1,5 +1,5 @@
 # Vue3 + JSX + CDN 方案
-
+- 无构建步骤
 - 通过service-worker拦截jsx转换为Vue.h 支持es6模块化
 
 ## unpkg版本锁定
