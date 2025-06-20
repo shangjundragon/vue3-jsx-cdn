@@ -1,5 +1,6 @@
 const {createApp, ref} = Vue;
 import HelloWorld from './component/HelloWorld.js'
+
 const app = createApp({
     setup() {
 
@@ -9,7 +10,8 @@ const app = createApp({
             count.value++
         }
 
-        return () => <div style={{display: 'flex',
+        return () => <div style={{
+            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
