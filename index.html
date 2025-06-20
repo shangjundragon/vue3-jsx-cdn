@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 JSX 内联方案</title>
+</head>
+
+<body>
+<div id="app"></div>
+<script type="module">
+    // 注册Service Worker的优化实现
+    import {loadScript, loadNaiveUiScript, loadVueScript, loadVueRouterScript, loadLink} from "./src/common/common.js";
+    import {registerServiceWorker} from "./src/common/register-serviceWorker.js";
+
+    const IS_PROD = false
+    async function initApp() {
+        try {
+            const swPath = new URL('./jsx-service-worker.js', window.location.href).href;
+            await loadLink('./src/assets/styles/common.css')
+            await loadLink('./src/assets/styles/flex-common.css')
+            await registerServiceWorker(swPath);
+            await loadVueScript(IS_PROD)
+            await loadVueRouterScript(IS_PROD)
+            await loadNaiveUiScript(IS_PROD)
+            await loadScript('./App.js', 'module')
+        } catch (error) {
+            console.error(error);
+            alert('初始化异常')
+        }
+    }
+
+    initApp()
+</script>
+</body>
+
+</html>
