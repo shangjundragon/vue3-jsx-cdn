@@ -9,7 +9,11 @@ const app = createApp({
             count.value++
         }
 
-        return () => <div>
+        return () => <div style={{display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+        }}>
             <HelloWorld onClickConfirm={(e) => {
                 console.log('onClickConfirm', e)
             }} msg="vue">
