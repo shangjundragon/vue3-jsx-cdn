@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单个html</title>
+</head>
+
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/vue@3.5.17/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js"></script>
+<script src="https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.27.6/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+    /*@jsx Vue.h*/
+    /*不支持import导入组件 只能使用 script type="text/babel" */
+    const {createApp, ref} = Vue;
+    const app = createApp({
+        setup() {
+
+            const count = ref(0);
+
+            function increment() {
+                count.value++
+            }
+
+            return () => <div>
+                <naive.NButton onClick={increment}>count {count.value}</naive.NButton>
+            </div>
+        }
+    });
+
+    app.mount('#app');
+</script>
+</body>
+
+</html>

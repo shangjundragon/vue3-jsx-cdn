@@ -1,7 +1,8 @@
-const VERSION = '28'
+const VERSION = '29'
+
+// 在这里切换babel
 //const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.js';
 const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js';
-const JSX_PRAGMA = '/* @jsx Vue.h */';
 
 self.addEventListener('install', event => {
     console.log('[SW] 安装成功');
@@ -63,7 +64,7 @@ async function handleJSRequest(request) {
 async function transformJSX(code) {
     try {
         // 添加JSX pragma注释
-        const jsxCode =  code;
+        const jsxCode = code;
 
         // 确保Babel已加载
         if (typeof Babel === 'undefined') {

@@ -1,5 +1,4 @@
-
-export async function registerServiceWorker(swPath, scope = new URL('./', window.location.href).href) {
+export async function registerJsxServiceWorker(swPath = './jsx-sw.js', scope = './') {
     // 检查浏览器支持
     if (!('serviceWorker' in navigator)) {
         throw new Error('您的浏览器不支持Service Worker');

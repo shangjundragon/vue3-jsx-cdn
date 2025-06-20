@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 JSX 内联方案</title>
+</head>
+
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/vue@3.5.17/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js"></script>
+<script src="https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js"></script>
+<script type="module">
+    import {registerJsxServiceWorker} from "../init-jsx-sw.js?no-jsx=1";
+
+    async function initApp() {
+        try {
+            await registerJsxServiceWorker('../jsx-sw.js');
+            const scriptElement = document.createElement('script');
+            scriptElement.src = './src/App.js';
+            scriptElement.type = 'module';
+            document.body.appendChild(scriptElement);
+        } catch (error) {
+            console.error(error);
+            alert('初始化异常')
+        }
+    }
+
+    initApp()
+</script>
+</body>
+
+</html>
