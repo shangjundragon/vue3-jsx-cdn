@@ -29,15 +29,27 @@ export function loadLink(href, rel = 'stylesheet') {
     });
 }
 
-export function loadVueScript(IS_PROD) {
-    return loadScript(IS_PROD ? 'https://unpkg.com/vue@3.5.17/dist/vue.global.prod.js?no-jsx=1' : 'https://unpkg.com/vue@3.5.17/dist/vue.global.js?no-jsx=1')
+export function loadVueScript(IS_PROD, arr = []) {
+    let src = IS_PROD ? 'https://unpkg.com/vue@3.5.17/dist/vue.global.prod.js?no-jsx=1' : 'https://unpkg.com/vue@3.5.17/dist/vue.global.js?no-jsx=1'
+    if (arr.length > 0) {
+        src = IS_PROD ? arr[0] : arr[1]
+    }
+    return loadScript(src)
 }
 
-export function loadVueRouterScript(IS_PROD) {
-    return loadScript(IS_PROD ? 'https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.js?no-jsx=1' : 'https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js?no-jsx=1')
+export function loadVueRouterScript(IS_PROD, arr = []) {
+    let src = IS_PROD ? 'https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.js?no-jsx=1' : 'https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js?no-jsx=1'
+    if (arr.length > 0) {
+        src = IS_PROD ? arr[0] : arr[1]
+    }
+    return loadScript(src)
 }
 
-export function loadNaiveUiScript(IS_PROD) {
-    return loadScript(IS_PROD ? 'https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js?no-jsx=1' : 'https://unpkg.com/naive-ui@2.42.0/dist/index.js?no-jsx=1')
+export function loadNaiveUiScript(IS_PROD, arr = []) {
+    let src = IS_PROD ? 'https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js?no-jsx=1' : 'https://unpkg.com/naive-ui@2.42.0/dist/index.js?no-jsx=1'
+    if (arr.length > 0) {
+        src = IS_PROD ? arr[0] : arr[1]
+    }
+    return loadScript(src)
 }
 
