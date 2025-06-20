@@ -1,4 +1,4 @@
-const VERSION = '29'
+const VERSION = '33'
 
 // 在这里切换babel
 //const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.js';
@@ -17,7 +17,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    // 只处理同源JS文件，排除特定文件
     if (shouldIntercept(url)) {
         event.respondWith(handleJSRequest(event.request));
     }
@@ -28,6 +27,7 @@ function shouldIntercept(url) {
     if (!url.pathname.endsWith('.js') || url.searchParams.has('no-jsx')) {
         return false;
     }
+
     return true
 }
 
@@ -47,7 +47,6 @@ async function handleJSRequest(request) {
 
         // 转换JSX
         const transformed = await transformJSX(originalText);
-
         // 返回转换后的响应
         return new Response(transformed, {
             headers: response.headers,

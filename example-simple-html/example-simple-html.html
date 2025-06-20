@@ -13,9 +13,15 @@
 <script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js"></script>
 <script src="https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.27.6/babel.min.js"></script>
+
 <script type="text/babel" data-type="module">
     /*@jsx Vue.h*/
-    /*不支持import导入组件 只能使用 script type="text/babel" */
+
+    /**
+     * 使用 data-type="module"，使用 import导入的js不会经过babel处理
+     * 可以使用 <script type="text/babel" src=""> 引入 会经过babel处理
+     */
+
     const {createApp, ref} = Vue;
     const app = createApp({
         setup() {
