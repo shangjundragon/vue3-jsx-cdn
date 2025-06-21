@@ -18,10 +18,7 @@
     async function initApp() {
         try {
             await registerJsxServiceWorker('../jsx-sw.js?no-jsx');
-            const scriptElement = document.createElement('script');
-            scriptElement.src = './src/App.js';
-            scriptElement.type = 'module';
-            document.body.appendChild(scriptElement);
+            import('./src/App.js')
         } catch (error) {
             console.error(error);
             alert('初始化异常')

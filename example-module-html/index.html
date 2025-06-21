@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>单个html</title>
+    <title>vue3 jsx</title>
 </head>
 
 <body>
@@ -19,10 +19,7 @@
     async function initApp() {
         try {
             await registerJsxServiceWorker('../jsx-sw.js?no-jsx');
-            const scriptElement = document.createElement('script');
-            scriptElement.src = './App.js';
-            scriptElement.type = 'module';
-            document.body.appendChild(scriptElement);
+            import('./App.js')
         } catch (error) {
             console.error(error);
             alert('初始化异常')
