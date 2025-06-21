@@ -14,8 +14,8 @@
 <script src="https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js?no-jsx"></script>
 
 <script type="module">
-    import {registerJsxServiceWorker} from "../init.js?no-jsx";
-    registerJsxServiceWorker({swPath: '../jsx-sw.js?no-jsx'}).then(() => {
+    import {initJsxSw} from "../init.js?no-jsx";
+    initJsxSw({swPath: '../jsx-sw.js?no-jsx'}).then(() => {
         import('./App.js')
     }).catch(error => {
         console.error(error);

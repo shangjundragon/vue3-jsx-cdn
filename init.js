@@ -4,9 +4,12 @@
  * @param [options.swPath]
  * @param [options.scope]
  * @param [options.swConfigData]
+ * @param [options.swConfigData.interceptor_mode]
+ * @param [options.swConfigData.babel_url]
+ * @param [options.swConfigData.cache_version]
  * @returns {Promise<ServiceWorkerRegistration>}
  */
-export async function registerJsxServiceWorker(options = {}) {
+export async function initJsxSw(options = {}) {
     console.log('[main] init')
     const {swPath = './jsx-sw.js', scope = './', swConfigData = {}} = options
     if (!('serviceWorker' in navigator)) {
