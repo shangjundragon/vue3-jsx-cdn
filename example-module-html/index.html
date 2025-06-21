@@ -15,7 +15,7 @@
 
 <script type="module">
     import {registerJsxServiceWorker} from "../init.js?no-jsx";
-    registerJsxServiceWorker('../jsx-sw.js?no-jsx').then(() => {
+    registerJsxServiceWorker({swPath: '../jsx-sw.js?no-jsx'}).then(() => {
         import('./App.js')
     }).catch(error => {
         console.error(error);

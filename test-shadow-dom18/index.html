@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue 3 JSX 内联方案</title>
+    <title>vue3 jsx</title>
 </head>
 
 <body>
@@ -12,13 +12,17 @@
 <script src="https://unpkg.com/vue@3.5.17/dist/vue.global.prod.js?no-jsx"></script>
 <script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js?no-jsx"></script>
 <script src="https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js?no-jsx"></script>
+
 <script type="module">
     import {registerJsxServiceWorker} from "../init.js?no-jsx";
 
     registerJsxServiceWorker({
-        swPath: '../jsx-sw.js?no-jsx'
+        swPath: '../jsx-sw.js?no-jsx',
+        swConfigData: {
+            babel_url: 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js',
+        }
     }).then(() => {
-        import('./src/App.js')
+        import('./App.js')
     }).catch(error => {
         console.error(error);
         alert('初始化异常')

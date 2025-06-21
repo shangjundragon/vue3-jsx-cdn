@@ -1,18 +1,25 @@
-const VERSION = '37';
-const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js';
-const CACHE_NAME = `babel-cache-1`;
+const VERSION = '40';
 
 let babelLoaded = false;
 
+let CONFIG = {
+    interceptor_mode: 'A',
+    babel_url: 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js',
+    cache_version: '1'
+}
+
 self.addEventListener('install', (event) => {
-    event.waitUntil(
+    console.log('[jsx-sw] install')
+    /*event.waitUntil(
         preloadBabel().catch(console.error)
-    );
+    );*/
 });
 
 self.addEventListener('activate', (event) => {
+    console.log('[jsx-sw] activate')
     event.waitUntil(handleActivation());
 });
+
 async function transformJSX(code) {
     if (!babelLoaded) await preloadBabel();
 
@@ -31,10 +38,22 @@ async function transformJSX(code) {
         return code; // 返回原始代码
     }
 }
+
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
-    if (!url.pathname.endsWith('.js') || url.searchParams.has('no-jsx')) {
+    if (!url.pathname.endsWith('.js')) {
         return;
+    }
+    if (CONFIG.interceptor_mode === 'A') {
+        if (url.searchParams.has('no-jsx')) {
+            // 参数标识no-jsx 不拦截
+            return;
+        }
+    } else if (CONFIG.interceptor_mode === 'B') {
+        if (!url.searchParams.has('jsx')) {
+            // 参数没有标识jsx 不拦截
+            return;
+        }
     }
     event.respondWith(handleFetch(event.request));
 });
@@ -73,22 +92,30 @@ async function handleFetch(request) {
 
 // ===== 核心功能函数 =====
 async function preloadBabel() {
-    const cache = await caches.open(CACHE_NAME);
-
+    console.log('[jsx-sw] 加载Babel')
+    const configData = await readIndexDbConfigData().catch(e => {
+        console.error(e);
+    })
+    // 合并有效配置
+    CONFIG = mergeObjects(configData, CONFIG);
+    console.log('[jsx-sw] CONFIG', CONFIG)
+    const cache = await caches.open(CONFIG.cache_version);
+    const babelUrl = configData?.babelUrl ?? CONFIG.babel_url
+    console.log('[jsx-sw] babelUrl', babelUrl)
     // 检查缓存中是否有Babel
-    const cachedResponse = await cache.match(BABEL_URL);
+    const cachedResponse = await cache.match(babelUrl);
     if (cachedResponse) {
         await executeScript(await cachedResponse.text());
         return;
     }
 
     // 从网络加载并缓存
-    const response = await fetch(BABEL_URL);
+    const response = await fetch(babelUrl);
     if (!response.ok) throw new Error('Babel加载失败');
 
     // 克隆响应用于缓存和执行
     const clone = response.clone();
-    await cache.put(BABEL_URL, clone);
+    await cache.put(babelUrl, clone);
 
     await executeScript(await response.text());
 }
@@ -109,11 +136,93 @@ async function handleActivation() {
     // 清理旧版本缓存
     const keys = await caches.keys();
     await Promise.all(
-        keys.filter(key => key.startsWith('babel-cache-') && key !== CACHE_NAME)
+        keys.filter(key => key.startsWith('babel-cache-') && key !== CONFIG.cache_version)
             .map(key => caches.delete(key))
     );
 
     await self.clients.claim();
 }
 
+async function readIndexDbConfigData() {
+    const dbName = 'SwSharedDB';
+    const storeName = 'appData';
+    const version = 1; // 明确指定版本号
 
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(dbName, version); // 添加版本号
+
+        // 添加升级处理
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(storeName)) {
+                db.createObjectStore(storeName, {keyPath: 'id'});
+                console.log(`创建对象存储: ${storeName}`);
+            }
+        };
+
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+
+            // 检查对象存储是否存在
+            if (!db.objectStoreNames.contains(storeName)) {
+                reject(new Error(`对象存储 ${storeName} 不存在`));
+                db.close();
+                return;
+            }
+
+            const tx = db.transaction(storeName, 'readonly');
+            const store = tx.objectStore(storeName);
+            const getRequest = store.get('jsx_sw_config');
+
+            getRequest.onsuccess = () => {
+                const data = getRequest.result;
+                if (data) {
+                    self.theme = data.theme;
+                } else {
+                    console.warn('未找到配置数据');
+                }
+                db.close();
+                resolve(data);
+            };
+
+            getRequest.onerror = (e) => {
+                console.error('读取数据失败', e);
+                db.close();
+                reject(e);
+            };
+        };
+
+        request.onerror = (e) => {
+            console.error('打开数据库失败', e);
+            reject(e);
+        };
+    });
+}
+
+/**
+ * 合并两个对象，保留有效值
+ * @param {Object} obj1 - 第一个对象
+ * @param {Object} obj2 - 第二个对象
+ * @param {Function} [isValid=(v) => v !== undefined && v !== null] - 自定义有效性判断函数
+ * @returns {Object} - 合并后的对象
+ */
+function mergeObjects(obj1, obj2, isValid = (v) => v !== undefined && v !== null) {
+    const result = {};
+    const keys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
+
+    for (const key of keys) {
+        const val1 = obj1[key];
+        const val2 = obj2[key];
+
+        if (isValid(val1)) {
+            result[key] = val1;
+        } else if (isValid(val2)) {
+            result[key] = val2;
+        } else {
+            // 如果两者都无效，可选保留默认值（如 undefined）
+            result[key] = val2;
+        }
+    }
+
+    return result;
+}
