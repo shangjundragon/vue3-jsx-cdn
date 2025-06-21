@@ -1,4 +1,3 @@
-const VERSION = '40';
 
 let babelLoaded = false;
 
@@ -8,8 +7,6 @@ let CONFIG = {
     interceptor_mode: 'A',
     // babel/standalone的地址
     babel_url: 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js',
-    // 缓存版本
-    cache_version: '1'
 }
 
 self.addEventListener('install', (event) => {
@@ -44,6 +41,7 @@ async function transformJSX(code) {
 }
 
 self.addEventListener('fetch', (event) => {
+    console.log('====')
     const url = new URL(event.request.url);
     if (!url.pathname.endsWith('.js')) {
         return;
@@ -103,23 +101,12 @@ async function preloadBabel() {
     // 合并有效配置
     CONFIG = mergeObjects(configData, CONFIG);
     console.log('[jsx-sw] CONFIG', CONFIG)
-    const cache = await caches.open(CONFIG.cache_version);
     const babelUrl = configData?.babelUrl ?? CONFIG.babel_url
     console.log('[jsx-sw] babelUrl', babelUrl)
-    // 检查缓存中是否有Babel
-    const cachedResponse = await cache.match(babelUrl);
-    if (cachedResponse) {
-        await executeScript(await cachedResponse.text());
-        return;
-    }
 
     // 从网络加载并缓存
     const response = await fetch(babelUrl);
     if (!response.ok) throw new Error('Babel加载失败');
-
-    // 克隆响应用于缓存和执行
-    const clone = response.clone();
-    await cache.put(babelUrl, clone);
 
     await executeScript(await response.text());
 }

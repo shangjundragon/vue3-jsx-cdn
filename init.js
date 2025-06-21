@@ -19,6 +19,7 @@ export async function initJsxSw(options = {}) {
 
     try {
         await writeSwConfigData(swConfigData)
+        //await unregisterServiceWorker()
         const registration = await navigator.serviceWorker.register(swPath, {scope});
         console.log('Service Worker注册成功:', registration);
 
