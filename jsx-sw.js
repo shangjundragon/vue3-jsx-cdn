@@ -2,9 +2,13 @@ const VERSION = '40';
 
 let babelLoaded = false;
 
+
 let CONFIG = {
+    // A 拦截所有js，要忽略的js需添加?no-jsx参数  B 只拦截参数中带有?jsx的js
     interceptor_mode: 'A',
+    // babel/standalone的地址
     babel_url: 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js',
+    // 缓存版本
     cache_version: '1'
 }
 
