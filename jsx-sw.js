@@ -1,107 +1,119 @@
-const VERSION = '33'
-
-// 在这里切换babel
-//const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.js';
+const VERSION = '37';
 const BABEL_URL = 'https://unpkg.com/@babel/standalone@7.27.6/babel.min.js';
+const CACHE_NAME = `babel-cache-1`;
 
-self.addEventListener('install', event => {
-    console.log('[SW] 安装成功');
-    self.skipWaiting();
+let babelLoaded = false;
+
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        preloadBabel().catch(console.error)
+    );
 });
 
-self.addEventListener('activate', event => {
-    console.log('[SW] 激活成功');
-    event.waitUntil(self.clients.claim());
+self.addEventListener('activate', (event) => {
+    event.waitUntil(handleActivation());
 });
-
-self.addEventListener('fetch', event => {
-    const url = new URL(event.request.url);
-
-    if (shouldIntercept(url)) {
-        event.respondWith(handleJSRequest(event.request));
-    }
-});
-
-// 判断是否应该拦截请求
-function shouldIntercept(url) {
-    if (!url.pathname.endsWith('.js') || url.searchParams.has('no-jsx')) {
-        return false;
-    }
-
-    return true
-}
-
-// 处理JS请求
-async function handleJSRequest(request) {
-    try {
-        const response = await fetch(request);
-
-        // 只处理200成功的响应
-        if (!response.ok || response.status !== 200) {
-            return response;
-        }
-
-        // 克隆响应以便多次使用
-        const clonedResponse = response.clone();
-        const originalText = await clonedResponse.text();
-
-        // 转换JSX
-        const transformed = await transformJSX(originalText);
-        // 返回转换后的响应
-        return new Response(transformed, {
-            headers: response.headers,
-            status: response.status,
-            statusText: response.statusText
-        });
-    } catch (error) {
-        console.error('[SW] JS请求处理失败:', error);
-        return fetch(request);
-    }
-}
-
-// 转换JSX为Vue h函数
 async function transformJSX(code) {
+    if (!babelLoaded) await preloadBabel();
+
     try {
-        // 添加JSX pragma注释
-        const jsxCode = code;
-
-        // 确保Babel已加载
-        if (typeof Babel === 'undefined') {
-            await loadBabel();
-        }
-
-        // 转换JSX
-        return Babel.transform(jsxCode, {
+        return Babel.transform(code, {
             presets: ['react'],
             plugins: [
                 ['transform-react-jsx', {
                     pragma: 'Vue.h',
                     pragmaFrag: 'Vue.Fragment'
                 }]
-            ],
-            sourceMaps: false
+            ]
         }).code;
-    } catch (error) {
-        console.error('[SW] JSX转换失败:', error);
-        return code; // 返回原始代码作为回退
+    } catch (e) {
+        console.error('JSX转换失败', e);
+        return code; // 返回原始代码
     }
 }
+self.addEventListener('fetch', (event) => {
+    const url = new URL(event.request.url);
+    if (!url.pathname.endsWith('.js') || url.searchParams.has('no-jsx')) {
+        return;
+    }
+    event.respondWith(handleFetch(event.request));
+});
 
-// 加载Babel库
-async function loadBabel() {
+
+// 处理请求的核心函数
+async function handleFetch(request) {
     try {
-        console.log('[SW] 正在加载Babel...');
-        const response = await fetch(BABEL_URL);
-        const script = await response.text();
+        const response = await fetch(request);
 
-        // 安全地执行Babel脚本
-        (0, eval)(script);
+        // 只处理成功的JS响应
+        if (!response.ok || response.status !== 200) {
+            return response;
+        }
 
-        // 设置全局Babel引用
-        self.Babel = Babel;
-        console.log('[SW] Babel加载完成');
+        // 克隆响应以便读取内容
+        const clonedResponse = response.clone();
+        const originalText = await clonedResponse.text();
+
+        // 转换JSX
+        const transformed = await transformJSX(originalText);
+
+        // 返回转换后的响应
+        return new Response(transformed, {
+            headers: response.headers,
+            status: response.status,
+            statusText: response.statusText
+        });
+
     } catch (error) {
-        console.error('[SW] Babel加载失败:', error);
-        throw error;
+        console.error('[SW] 请求处理失败:', error);
+        // 降级处理：返回原始请求
+        return fetch(request);
     }
 }
+
+// ===== 核心功能函数 =====
+async function preloadBabel() {
+    const cache = await caches.open(CACHE_NAME);
+
+    // 检查缓存中是否有Babel
+    const cachedResponse = await cache.match(BABEL_URL);
+    if (cachedResponse) {
+        await executeScript(await cachedResponse.text());
+        return;
+    }
+
+    // 从网络加载并缓存
+    const response = await fetch(BABEL_URL);
+    if (!response.ok) throw new Error('Babel加载失败');
+
+    // 克隆响应用于缓存和执行
+    const clone = response.clone();
+    await cache.put(BABEL_URL, clone);
+
+    await executeScript(await response.text());
+}
+
+async function executeScript(script) {
+    try {
+        // 安全执行脚本
+        (0, eval)(script);
+        self.Babel = Babel; // 全局引用
+        babelLoaded = true;
+    } catch (e) {
+        console.error('Babel执行失败', e);
+        throw e;
+    }
+}
+
+async function handleActivation() {
+    // 清理旧版本缓存
+    const keys = await caches.keys();
+    await Promise.all(
+        keys.filter(key => key.startsWith('babel-cache-') && key !== CACHE_NAME)
+            .map(key => caches.delete(key))
+    );
+
+    await self.clients.claim();
+}
+
+
