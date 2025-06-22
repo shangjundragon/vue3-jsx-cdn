@@ -19,8 +19,18 @@
     }
 
     navigator.serviceWorker.register('./jsx-sw.js', {scope: './'}).then(reg => {
-        navigator.serviceWorker.addEventListener('message', () => import('./src/App.js'));
+        navigator.serviceWorker.addEventListener('message', () => {
+            console.log('[main] message')
+            import('./src/App.js')
+        });
         if (reg.active) {
+            const key = 'jsx-sw-' + window.location.href
+            if (!localStorage.getItem(key)) {
+                localStorage.setItem(key, '1')
+                console.log('[main] reload')
+                window.location.reload()
+            }
+            console.log('[main] reg.active')
             import('./src/App.js')
         }
     })

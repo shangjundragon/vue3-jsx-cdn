@@ -1,6 +1,6 @@
 const {RouterView} = VueRouter
 const {createApp, onMounted} = Vue;
-import router from './router'
+import router from './router/index.js'
 
 function routerPush(name) {
     return router.push({name})
