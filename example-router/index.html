@@ -13,16 +13,18 @@
 <script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.prod.js?no-jsx"></script>
 <script src="https://unpkg.com/naive-ui@2.42.0/dist/index.prod.js?no-jsx"></script>
 <script type="module">
-    import {initJsxSw} from "../init.js?no-jsx";
+    if (!('serviceWorker' in navigator)) {
+        alert('您的浏览器不支持Service Worker')
+        throw new Error('您的浏览器不支持Service Worker');
+    }
 
-    initJsxSw({
-        swPath: '../jsx-sw.js?no-jsx'
-    }).then(() => {
-        import('./src/App.js')
-    }).catch(error => {
-        console.error(error);
-        alert('初始化异常')
+    navigator.serviceWorker.register('./jsx-sw.js', {scope: './'}).then(reg => {
+        navigator.serviceWorker.addEventListener('message', () => import('./src/App.js'));
+        if (reg.active) {
+            import('./src/App.js')
+        }
     })
+
 </script>
 </body>
 
