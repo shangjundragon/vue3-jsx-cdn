@@ -1,4 +1,4 @@
-
+const version = 'v1.0.0'
 let babelLoaded = false;
 
 
@@ -106,15 +106,14 @@ async function preloadBabel() {
 
     // 从网络加载并缓存
     const response = await fetch(babelUrl);
-    if (!response.ok) throw new Error('Babel加载失败');
+    if (!response.ok) {
+        throw new Error('Babel加载失败')
+    }
+    const babelScriptText = await response.text()
 
-    await executeScript(await response.text());
-}
-
-async function executeScript(script) {
     try {
         // 安全执行脚本
-        (0, eval)(script);
+        (0, eval)(babelScriptText);
         self.Babel = Babel; // 全局引用
         babelLoaded = true;
     } catch (e) {
@@ -123,11 +122,12 @@ async function executeScript(script) {
     }
 }
 
+
 async function handleActivation() {
     // 清理旧版本缓存
     const keys = await caches.keys();
     await Promise.all(
-        keys.filter(key => key.startsWith('babel-cache-') && key !== CONFIG.cache_version)
+        keys.filter(key => key.startsWith('babel-cache-') && key !== version)
             .map(key => caches.delete(key))
     );
 

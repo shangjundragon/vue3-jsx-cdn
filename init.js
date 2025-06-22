@@ -16,7 +16,6 @@ export async function initJsxSw(options = {}) {
         throw new Error('您的浏览器不支持Service Worker');
     }
 
-
     try {
         await writeSwConfigData(swConfigData)
         //await unregisterServiceWorker()
@@ -32,6 +31,7 @@ export async function initJsxSw(options = {}) {
             if (registration.installing) {
                 registration.installing.addEventListener('statechange', () => {
                     setTimeout(() => {
+                        console.log('[main] reload')
                         window.location.reload();
                     }, 100)
                     return registration.active && resolve()
