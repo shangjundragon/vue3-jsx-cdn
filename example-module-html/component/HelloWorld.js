@@ -12,7 +12,7 @@ export default defineComponent(
             {slots.header?.() || 'header插槽'}
             {slots.default?.() || '默认插槽'}
             <div>Hello World {props.msg}</div>
-            <naive.NButton onClick={clickConfirm}>确定</naive.NButton>
+            <naive.NButton onClick={clickConfirm}>{{default: () => '确定'}}</naive.NButton>
             {slots.footer?.(list.value) || 'footer插槽'}
         </div>
     },

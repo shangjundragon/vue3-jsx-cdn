@@ -9,6 +9,6 @@ export default defineComponent(() => {
     }
     return () => <div >
         <h1>home页面</h1>
-        <naive.NButton onClick={increment}>count {count.value}</naive.NButton>
+        <naive.NButton onClick={increment}> {{ default: () => `count ${count.value}` }}</naive.NButton>
     </div>
 })

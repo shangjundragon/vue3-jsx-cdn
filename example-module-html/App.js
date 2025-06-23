@@ -25,7 +25,7 @@ const app = createApp({
                     footer: (list) => <span>{list.join(',')}</span>,
                 }}
             </HelloWorld>
-            <naive.NButton onClick={increment}>count {count.value}</naive.NButton>
+            <naive.NButton onClick={increment}>{{ default: () => `count ${count.value}` }}</naive.NButton>
         </div>
     }
 });

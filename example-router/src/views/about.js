@@ -5,5 +5,5 @@ export default defineComponent(() => {
     onMounted(() => {
         console.log('about页面')
     })
-    return () => <div className="bor-red">about页面</div>
+    return () => <div className="bor-red">{{default: () => 'about'}}</div>
 })
