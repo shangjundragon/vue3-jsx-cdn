@@ -3,7 +3,6 @@ import HelloWorld from './component/HelloWorld.js'
 
 const app = createApp({
     setup() {
-
         const count = ref(0);
 
         function increment() {
