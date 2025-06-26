@@ -43,6 +43,7 @@ self.addEventListener('fetch', event => {
 })
 
 async function getBabel() {
+    console.log('[sw] 加载babel')
     const r = await fetch(CONFIG.babel_url)
     eval(await r.text())
 }
@@ -51,6 +52,9 @@ async function handleRequest(request) {
     const url = new URL(request.url)
     const r = await fetch(request)
     if (r.status === 200 & url.host === location.host && url.pathname.endsWith('.js')) {
+        if (!Babel) {
+            await getBabel()
+        }
         const jsx = await r.text()
         const js = Babel.transform(jsx, {
             presets: ['react'],
