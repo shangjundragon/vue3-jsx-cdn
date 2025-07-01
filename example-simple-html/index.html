@@ -24,7 +24,7 @@
 
     const {createApp, ref} = Vue;
     const app = createApp({
-        setup() {
+        /*setup() {
 
             const count = ref(0);
 
@@ -35,10 +35,27 @@
             return () => <div>
                 <naive.NButton onClick={increment}>count {count.value}</naive.NButton>
             </div>
-        }
+        }*/
+        setup() {
+            const count = ref(0);
+
+            const increment = () => {
+                count.value++;
+            };
+
+            return {
+                count,
+                increment
+            };
+        },
+        template: `
+          <div>
+            <n-button @click="increment">{{ count }}</n-button>
+          </div>
+        `
     });
 
-    app.mount('#app');
+    app.use(naive).mount('#app');
 </script>
 </body>
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单个html</title>
+</head>
+
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/vue@3.5.17/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.js"></script>
+<script src="https://unpkg.com/naive-ui@2.42.0/dist/index.js"></script>
+<script>
+    const {createApp, ref, onMounted, defineComponent, defineAsyncComponent} = Vue;
+</script>
+<script type="module">
+    import router from './src/router/index.js'
+
+    const app = createApp({
+        template: `
+          <div style="display: flex;flex-direction: column;gap: 1rem;align-items: center">
+            <n-button @click="increment">{{ count }}</n-button>
+            <Hello username="张三"></Hello>
+            <div style="display: flex;gap: 1rem;align-items: center">
+              <n-button @click="changeRoute('home')">home</n-button>
+              <n-button @click="changeRoute('about')">about</n-button>
+            </div>
+            <router-view></router-view>
+          </div>
+        `,
+        components: {
+            Hello: defineAsyncComponent(() => import('./src/components/Hello.js')),
+        },
+        setup() {
+
+            const count = ref(0);
+
+            const increment = () => {
+                count.value++;
+            };
+
+            return {
+                count,
+                increment,
+                changeRoute(name) {
+                    router.push({name})
+                }
+            };
+        }
+
+    });
+
+    app.use(router).use(naive).mount('#app');
+</script>
+</body>
+
+</html>
