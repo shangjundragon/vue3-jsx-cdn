@@ -15,27 +15,59 @@
 
 <script type="module">
     if (!('serviceWorker' in navigator)) {
-        alert('不支持Service Worker')
-        throw new Error('不支持Service Worker');
+        alert('不支持 Service Worker');
+        throw new Error('不支持 Service Worker');
     }
 
-    navigator.serviceWorker.register('./jsx-sw.js', {scope: './'}).then(reg => {
-        navigator.serviceWorker.addEventListener('message', () => {
-            console.log('[main] message')
-            import('./App.js')
-        });
-        if (reg.active) {
-            const key = 'jsx-sw-' + window.location.href
-            if (!localStorage.getItem(key)) {
-                localStorage.setItem(key, '1')
-                console.log('[main] reload')
-                window.location.reload()
-            }
-            console.log('[main] reg.active')
-            import('./App.js')
-        }
-    })
+    // 定义 Service Worker 注册和加载逻辑
+    const registerAndLoad = async () => {
+        try {
+            const reg = await navigator.serviceWorker.register('./jsx-sw.js', {
+                scope: './'
+            });
 
+            // 处理刷新逻辑
+            const key = 'jsx-sw-' + window.location.href;
+            if (reg.active && !localStorage.getItem(key)) {
+                localStorage.setItem(key, '1');
+                window.location.reload(); // 首次激活强制刷新
+                return; // 终止后续逻辑
+            }
+
+            // 监听 Service Worker 就绪消息
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data === 'sw-ready') {
+                    loadApp(); // 收到就绪信号后加载应用
+                }
+            });
+
+            // 检查是否已有激活的 Worker
+            if (reg.active) {
+                loadApp();
+            } else if (reg.installing) {
+                reg.installing.addEventListener('statechange', (e) => {
+                    if (e.target.state === 'activated') {
+                        loadApp(); // 新安装激活后加载
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Service Worker 注册失败:', error);
+            loadApp(); // 降级方案：直接加载
+        }
+    };
+
+    // 应用加载函数
+    const loadApp = () => {
+        import('./App.js').catch(e => console.error('加载应用失败:', e));
+    };
+
+    // 页面完全加载后启动注册
+    if (document.readyState === 'complete') {
+        registerAndLoad();
+    } else {
+        window.addEventListener('load', registerAndLoad);
+    }
 </script>
 </body>
 

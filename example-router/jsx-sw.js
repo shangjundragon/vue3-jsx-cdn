@@ -13,14 +13,17 @@ self.addEventListener('install', e => {
     );
 });
 
-// 新增activate事件处理
+// activate事件处理
 self.addEventListener('activate', e => {
-    // 立即接管所有客户端
-    e.waitUntil(Promise.all([self.clients.claim(), self.clients.matchAll().then((clients) => {
-        clients.forEach((client) => {
-            client.postMessage('Hello from Service Worker!');
-        });
-    })]));
+    e.waitUntil(
+        Promise.all([
+            self.clients.claim(),
+            self.clients.matchAll().then(clients => {
+                // 发送就绪信号给所有客户端
+                clients.forEach(client => client.postMessage('sw-ready'));
+            })
+        ])
+    );
 });
 
 self.addEventListener('fetch', event => {
