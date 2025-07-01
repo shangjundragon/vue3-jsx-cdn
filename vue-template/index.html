@@ -32,6 +32,15 @@
         `,
         components: {
             Hello: defineAsyncComponent(() => import('./src/components/Hello.js')),
+            Hi: defineComponent({
+                template: `
+                    <h1>{{username}}</h1>
+                `,
+                props: {
+                    username: String
+                },
+
+            })
         },
         setup() {
 
