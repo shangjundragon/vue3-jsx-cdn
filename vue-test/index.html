@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单个html</title>
+</head>
+
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/vue@3.5.17/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.js"></script>
+<script src="https://unpkg.com/naive-ui@2.42.0/dist/index.js"></script>
+<script>
+    const {createApp, ref, watch, defineComponent,defineAsyncComponent, computed, h} = Vue;
+</script>
+<script type="module">
+
+    const app = createApp({
+        template: `
+          <div style="display: flex;flex-direction: column;gap: 1rem;align-items: center;padding: 1rem">
+            <n-select v-model:value="select1"
+                      :options="[{label: 'a', value: 'a'}, {label: 'b', value: 'b'}, {label: 'c', value: 'c'}]"/>
+            <n-select v-model:value="select2"
+                      :options="[{label: 'a', value: 'a'}, {label: 'b', value: 'b'}, {label: 'c', value: 'c'}]"/>
+            <HelloComp></HelloComp>
+          </div>
+        `,
+        components: {
+          HelloComp: defineAsyncComponent(() => import('./components/HelloComp.js'))
+        },
+        setup() {
+            const select1 = ref(null)
+            const select2 = ref(null)
+            const select1IsA = computed(() => {
+                console.log('computed select1IsA.value')
+                return select1.value === 'a'
+            })
+            watch(() => select1.value, () => {
+                console.log('watch select1IsA.value', select1IsA.value)
+            })
+            return {
+                select1,
+                select2,
+                select1IsA
+            };
+        }
+
+    });
+
+    app.use(naive).mount('#app');
+</script>
+</body>
+
+</html>
