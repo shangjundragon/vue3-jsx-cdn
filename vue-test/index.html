@@ -13,10 +13,10 @@
 <script src="https://unpkg.com/vue-router@4.5.1/dist/vue-router.global.js"></script>
 <script src="https://unpkg.com/naive-ui@2.42.0/dist/index.js"></script>
 <script>
-    const {createApp, ref, watch, defineComponent,defineAsyncComponent, computed, h} = Vue;
+    const {createApp, ref, watch, defineComponent,defineAsyncComponent, computed, h, resolveComponent} = Vue;
 </script>
 <script type="module">
-
+    import HelloComp from "./components/HelloComp.js";
     const app = createApp({
         template: `
           <div style="display: flex;flex-direction: column;gap: 1rem;align-items: center;padding: 1rem">
@@ -28,7 +28,7 @@
           </div>
         `,
         components: {
-          HelloComp: defineAsyncComponent(() => import('./components/HelloComp.js'))
+          HelloComp
         },
         setup() {
             const select1 = ref(null)

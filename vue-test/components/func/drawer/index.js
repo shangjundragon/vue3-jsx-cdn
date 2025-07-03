@@ -1,4 +1,4 @@
-const {NDrawer, NDrawerContent, NConfigProvider, zhCN, dateZhCN } = window.naive
+const {NDrawer, NDrawerContent, NConfigProvider, zhCN, dateZhCN} = window.naive
 
 /**
  *
@@ -7,31 +7,29 @@ const {NDrawer, NDrawerContent, NConfigProvider, zhCN, dateZhCN } = window.naive
  * @param option.content
  */
 function create(option) {
-    const {
-        props = {},
-        content
-    } = option
+    const { props = {}, content: Content } = option;
 
-    const appBox = document.createElement('div')
-    document.body.appendChild(appBox)
-    const showDrawer = ref(false)
+    const appBox = document.createElement('div');
+    document.body.appendChild(appBox);
+
+    const showDrawer = ref(false);
     const instance = createApp({
         setup() {
-
-            const {onAfterLeave} = props
-            props['on-after-leave'] = () => {
-                try {
-                    onAfterLeave?.()
-                } finally {
-                    destroy()
+            // 正确的内容渲染函数
+            const renderContent = () => {
+                // 如果是函数组件
+                if (typeof Content === 'function') {
+                    return Content();
                 }
-            }
-            const DrawerContent = () => {
-                if (typeof content === 'function') {
-                    return content()
+                // 如果是组件选项对象
+                else if (Content && Content.setup) {
+                    return h(Content);
                 }
-                return content
-            }
+                // 直接内容（字符串、VNode 等）
+                else {
+                    return Content;
+                }
+            };
 
             return () => h(
                 NConfigProvider,
@@ -47,26 +45,27 @@ function create(option) {
                         'onUpdate:show': value => showDrawer.value = value,
                         ...props
                     },
+                    // 关键修复：正确渲染内容
                     () => h(NDrawerContent, null, {
-                        default: () => DrawerContent()
+                        default: () => renderContent()
                     })
                 )
-            )
+            );
         }
-    })
+    });
 
     instance.mount(appBox);
-    showDrawer.value = true
+    showDrawer.value = true;
 
     function destroy() {
-        instance.unmount()
-        appBox.remove()
+        instance.unmount();
+        appBox.remove();
     }
 
     return {
         destroy,
         close: () => showDrawer.value = false
-    }
+    };
 }
 
 export default {

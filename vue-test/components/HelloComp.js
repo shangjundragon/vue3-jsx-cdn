@@ -1,10 +1,11 @@
 import drawer from './func/drawer/index.js'
+import HiComp from "./HiComp.js";
 
-export default defineComponent({
+export default {
     template: `
-        <div>
+        <div style="display: flex;flex-direction: column;gap: 1rem">
             <n-button @click="increment">count {{count}}</n-button>
-            <n-button @click="test">test</n-button>
+            <n-button @click="test">Drawer</n-button>
         </div>    
     `,
     setup() {
@@ -20,11 +21,24 @@ export default defineComponent({
             test() {
                 drawer.create({
                     props: {
-                      width: '50vw'
+                        width: '50vw'
                     },
-                    content: () => h('span', null, '文字')
+                    //content: () => h('div', null, h(naive.NButton, {type: 'primary'}, () => 'NButton'))
+                    content: {
+                        template: `
+                            <div>
+                                <n-button>NButton</n-button>
+                            </div>
+                        `,
+                        components: {
+                            NButton: naive.NButton
+                        },
+                        setup() {}
+                    }
+                    //content: h(naive.NButton, {}, () => 'NButton'),
+
                 })
             }
         }
     }
-})
+}
