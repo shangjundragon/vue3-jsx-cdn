@@ -39,9 +39,7 @@ function create(option) {
                     'inline-theme-disabled': true,
                     locale: zhCN,
                     'date-locale': dateZhCN,
-
                 },
-
                 () => h(
                     NDrawer,
                     {
